@@ -111,7 +111,7 @@ fs.createReadStream(filepath)
       this.data[idx + 2] = grayscale;
     }
   }
-  const outputFilePath = `/Users/harpe/3012/greyscaled/out${Math.floor(Math.random() * 12)}.png`;
+  const outputFilePath = `/Users/harpe/3012/grayscaled/out${Math.floor(Math.random() * 12)}.png`;
   this.pack().pipe(fs.createWriteStream(outputFilePath));
   
 })
