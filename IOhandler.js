@@ -32,7 +32,7 @@ return new Promise((resolve, reject) => {
         if (err) {
             reject(err);
         }
-        
+
     });
     const pathUnZip = path.dirname(pathIn)+"/unzipped";
     const zip = new AdmZip(pathIn);
@@ -55,21 +55,21 @@ return new Promise((res, rej) =>{
   fs.readdir(dir, (err, files) => {
     if (err){
       rej(err);
-    
+
     }else{
        filter = files.filter((file) => path.extname(file) === ".png");
        filtered = filter.map((file) => `${pathUnzipped}\\${file}`);
-       
-       
-       res(filtered.toString()); 
-      
+
+
+       res(filtered.toString());
+
    }
-    
-   
+
+
    });
 
 
-}) 
+})
 };
 
 
@@ -83,46 +83,56 @@ return new Promise((res, rej) =>{
 * @param {string} pathProcessed
 * @return {promise}
 */
-const grayScale = (pathIn) => {
-const files = pathIn.split(",");
-files.forEach((filepath)=> {
-fs.createReadStream(filepath)
-.pipe(
-  new PNG({
-    filterType: 4,
-  })
-)
-.on('parsed', function () {
-  
-  for (let y = 0; y < this.height; y++) {
-    for (let x = 0; x < this.width; x++) {
-      const idx = (this.width * y + x) << 2;
-      const red = this.data[idx];
-      const green = this.data[idx + 1];
-      const blue = this.data[idx + 2];
-      const alpha = this.data[idx + 3];
 
-      
-      const grayscale = (red + green + blue) / 3;
 
-      
-      this.data[idx] = grayscale;
-      this.data[idx + 1] = grayscale;
-      this.data[idx + 2] = grayscale;
-    }
-  }
-  const outputFilePath = `/Users/harpe/3012/grayscaled/out${Math.floor(Math.random() * 12)}.png`;
-  this.pack().pipe(fs.createWriteStream(outputFilePath));
-  
-})
-.on('error', function (err) {
-  console.error('Error:', err);
-});
-});
-};
+
+
+
+
+  const grayScale = (pathIn) => {
+    return new Promise ((res, rej)=>{
+      try{
+        const files = pathIn.split(",");
+        files.forEach((filepath)=> {
+    fs.createReadStream(filepath)
+    .pipe(
+      new PNG({
+        filterType: 4,
+      })
+    )
+    .on('parsed', function () {
+    
+      for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.width; x++) {
+          const idx = (this.width * y + x) << 2;
+          const red = this.data[idx];
+          const green = this.data[idx + 1];
+          const blue = this.data[idx + 2];
+          const alpha = this.data[idx + 3];
+    
+    
+          const grayscale = (red + green + blue) / 3;
+    
+    
+          this.data[idx] = grayscale;
+          this.data[idx + 1] = grayscale;
+          this.data[idx + 2] = grayscale;
+        }
+      }
+      const outputFilePath = `/Users/harpe/3012/grayscaled/out${Math.floor(Math.random() * 12)}.png`;
+      this.pack().pipe(fs.createWriteStream(outputFilePath));
+      res("Files have been converted")
+    });
+  });
+    }catch(error){
+      rej(error)
+    }  
+    });
+    };
 
 module.exports = {
   unzip,
   readDir,
   grayScale
 };
+
